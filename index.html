@@ -9,18 +9,19 @@
 </head>
 <body>
     <h1>OpenSea Testnet NFT QRスキャナー</h1>
-    
+
     <!-- カメラON/OFFボタン -->
     <button id="toggle-camera">📷 カメラをONにする</button>
 
     <h2>🔍 QRコードをスキャンする</h2>
     <div id="qr-reader" style="width: 300px; display: none;"></div>
-    
+
     <p><a id="result" href="#" target="_blank"></a></p>
 
     <h2>🖼 読み取ったNFT</h2>
     <div id="nft-display">
         <img id="nft-image" src="" alt="NFT画像" style="max-width: 300px; display: none;">
+        <video id="nft-video" controls style="max-width: 300px; display: none;"></video>
         <p id="nft-name"></p>
         <p id="nft-description"></p>
     </div>
