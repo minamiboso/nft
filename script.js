@@ -41,11 +41,24 @@ async function fetchNFTData(contractAddress, tokenId) {
         if (data.nft) {
             let nft = data.nft;
             let imageUrl = nft.display_image_url || nft.image_url || "";
+            let videoUrl = nft.animation_url || "";
             let name = nft.name || "不明なNFT";
             let description = nft.description || "説明なし";
 
-            document.getElementById("nft-image").src = imageUrl || "";
-            document.getElementById("nft-image").style.display = imageUrl ? "block" : "none";
+            if (videoUrl) {
+                document.getElementById("nft-video").src = videoUrl;
+                document.getElementById("nft-video").style.display = "block";
+                document.getElementById("nft-image").style.display = "none";
+            } else if (imageUrl) {
+                document.getElementById("nft-image").src = imageUrl;
+                document.getElementById("nft-image").style.display = "block";
+                document.getElementById("nft-video").style.display = "none";
+            } else {
+                document.getElementById("nft-image").style.display = "none";
+                document.getElementById("nft-video").style.display = "none";
+                alert("NFTのメディアデータが見つかりませんでした。");
+            }
+
             document.getElementById("nft-name").innerText = `名前: ${name}`;
             document.getElementById("nft-description").innerText = `説明: ${description}`;
         } else {
