@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT QRスキャナー (Testnet対応)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.7/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <h1>OpenSea Testnet NFT QRスキャナー</h1>
+    
+    <!-- カメラON/OFFボタン -->
+    <button id="toggle-camera">📷 カメラをONにする</button>
+
+    <h2>🔍 QRコードをスキャンする</h2>
+    <div id="qr-reader" style="width: 300px; display: none;"></div>
+    
+    <p><a id="result" href="#" target="_blank"></a></p>
+
+    <h2>🖼 読み取ったNFT</h2>
+    <div id="nft-display">
+        <img id="nft-image" src="" alt="NFT画像" style="max-width: 300px; display: none;">
+        <p id="nft-name"></p>
+        <p id="nft-description"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
