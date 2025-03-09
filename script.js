@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     let html5QrCode = null;
     let isCameraActive = false;
+    let stream = null;
 
     // QRコードスキャン成功時の処理
     function onScanSuccess(decodedText, decodedResult) {
@@ -68,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // カメラを起動
-    function startCamera() {
+    async function startCamera() {
         if (html5QrCode) {
             console.log("既にカメラが起動しています。");
             return;
@@ -79,28 +80,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
         html5QrCode = new Html5Qrcode("qr-reader");
 
-        const cameraConfig = {
-            facingMode: "environment",  // 背面カメラを使用
-            width: { ideal: 1920 },      // 高解像度設定
-            height: { ideal: 1080 },
-            advanced: [{ focusMode: "continuous" }] // ピント調整（オートフォーカス）
-        };
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const backCamera = devices.find(device => device.kind === "videoinput" && device.label.toLowerCase().includes("back"));
 
-        html5QrCode.start(
-            cameraConfig,
-            {
-                fps: 15, 
-                qrbox: 100,  // 小さいQRコード向け
-                useBarCodeDetectorIfSupported: true  // サファリ対応
-            },
-            onScanSuccess
-        ).then(() => {
-            document.getElementById("toggle-camera").innerText = "📷 カメラをOFFにする";
-            isCameraActive = true;
-        }).catch(err => {
-            console.error("カメラ起動エラー:", err);
-            alert("カメラの起動に失敗しました。ブラウザのカメラアクセス設定を確認してください。");
-        });
+            let constraints = {
+                video: {
+                    deviceId: backCamera ? { exact: backCamera.deviceId } : undefined,
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                    focusMode: "continuous",  // オートフォーカスを有効にする
+                    advanced: [{ focusMode: "continuous" }]
+                }
+            };
+
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            
+            html5QrCode.start(
+                stream,
+                {
+                    fps: 15,
+                    qrbox: 100,
+                    useBarCodeDetectorIfSupported: true
+                },
+                onScanSuccess
+            ).then(() => {
+                document.getElementById("toggle-camera").innerText = "📷 カメラをOFFにする";
+                isCameraActive = true;
+            }).catch(err => {
+                console.error("カメラ起動エラー:", err);
+                alert("カメラの起動に失敗しました。ブラウザのカメラアクセス設定を確認してください。");
+            });
+
+        } catch (err) {
+            console.error("カメラアクセスエラー:", err);
+            alert("カメラへのアクセスに失敗しました。ブラウザのカメラ設定を確認してください。");
+        }
     }
 
     // カメラを停止
@@ -114,6 +129,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }).catch(err => {
                 console.error("カメラ停止エラー:", err);
             });
+        }
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
         }
     }
 });
