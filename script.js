@@ -79,9 +79,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         html5QrCode = new Html5Qrcode("qr-reader");
 
+        const cameraConfig = {
+            facingMode: "environment",  // 背面カメラを使用
+            width: { ideal: 1920 },      // 高解像度設定
+            height: { ideal: 1080 },
+            advanced: [{ focusMode: "continuous" }] // ピント調整（オートフォーカス）
+        };
+
         html5QrCode.start(
-            { facingMode: "environment" }, // 背面カメラを使用
-            { fps: 15, qrbox: 100 },  // 小さいQRコード向けに最適化
+            cameraConfig,
+            {
+                fps: 15, 
+                qrbox: 100,  // 小さいQRコード向け
+                useBarCodeDetectorIfSupported: true  // サファリ対応
+            },
             onScanSuccess
         ).then(() => {
             document.getElementById("toggle-camera").innerText = "📷 カメラをOFFにする";
