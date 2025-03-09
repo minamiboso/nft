@@ -1,1 +1,1 @@
-# nft
+# MIANMIBOSONFT用コードです
