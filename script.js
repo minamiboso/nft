@@ -41,24 +41,11 @@ async function fetchNFTData(contractAddress, tokenId) {
         if (data.nft) {
             let nft = data.nft;
             let imageUrl = nft.display_image_url || nft.image_url || "";
-            let videoUrl = nft.animation_url || "";
             let name = nft.name || "不明なNFT";
             let description = nft.description || "説明なし";
 
-            if (videoUrl) {
-                document.getElementById("nft-video").src = videoUrl;
-                document.getElementById("nft-video").style.display = "block";
-                document.getElementById("nft-image").style.display = "none";
-            } else if (imageUrl) {
-                document.getElementById("nft-image").src = imageUrl;
-                document.getElementById("nft-image").style.display = "block";
-                document.getElementById("nft-video").style.display = "none";
-            } else {
-                document.getElementById("nft-image").style.display = "none";
-                document.getElementById("nft-video").style.display = "none";
-                alert("NFTのメディアデータが見つかりませんでした。");
-            }
-
+            document.getElementById("nft-image").src = imageUrl || "";
+            document.getElementById("nft-image").style.display = imageUrl ? "block" : "none";
             document.getElementById("nft-name").innerText = `名前: ${name}`;
             document.getElementById("nft-description").innerText = `説明: ${description}`;
         } else {
@@ -79,8 +66,8 @@ document.getElementById("toggle-camera").addEventListener("click", function() {
 function startCamera() {
     document.getElementById("qr-reader").style.display = "block";
     html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } },
+        { fps: 15, qrbox: 100 },  // 読み取り性能向上のため変更
         onScanSuccess
     ).then(() => {
         document.getElementById("toggle-camera").innerText = "📷 カメラをOFFにする";
