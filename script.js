@@ -1,3 +1,4 @@
+
 let html5QrCode = new Html5Qrcode("qr-reader");
 let isCameraActive = false;
 
@@ -75,17 +76,11 @@ document.getElementById("toggle-camera").addEventListener("click", function() {
     isCameraActive ? stopCamera() : startCamera();
 });
 
-// カメラを起動（オートフォーカス有効）
+// カメラを起動
 function startCamera() {
     document.getElementById("qr-reader").style.display = "block";
-
-    const videoConstraints = {
-        facingMode: "environment",
-        advanced: [{ focusMode: "continuous" }] // オートフォーカスを有効化
-    };
-
     html5QrCode.start(
-        videoConstraints,
+        { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
         onScanSuccess
     ).then(() => {
@@ -101,4 +96,6 @@ function stopCamera() {
         document.getElementById("qr-reader").style.display = "none";
         isCameraActive = false;
     }).catch(err => console.error("カメラ停止エラー:", err));
+
 }
+
